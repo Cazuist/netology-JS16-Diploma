@@ -63,13 +63,13 @@ class Actor {
     isIntersect(actor) {
         if (!actor || !(actor instanceof Actor)) {
             throw new Error('Аргумент не передан или не является типом Actor');
-        } 
+        }
 
-        if (this == actor) return false;
-        
+        if(actor === this) return false;
+
         else if (this.left >= actor.right || this.right <= actor.left || this.bottom <= actor.top || this.top >= actor.bottom) return false;
         
-    return true;   
+        return true; 
     }
 }
 
@@ -118,16 +118,14 @@ class Level {
             left = Math.floor(position.x),
             right = Math.floor(position.x + size.x);
           
-        if ((top < 0 || left < 0 || right > this.width) && bottom < this.height) return 'wall';
-        else if (bottom > this.height) return 'lava';
-        else {
-            for (let y = top; y <= bottom; y++) {
-                for (let x = left; x <= right; x++) {
-                    if (this.grid[y][x] === 'lava' || this.grid[y][x] === 'wall') return this.grid[y][x];
-                    else return undefined;
-                }
+        if (top < 0 || left < 0 || right > this.width) return 'wall';
+        else if (bottom >= this.height) return 'lava';
+        
+        for (let y = top; y <= bottom; y++) {
+            for (let x = left; x <= right; x++) {
+                if (this.grid[y][x] === 'lava' || this.grid[y][x] === 'wall') return this.grid[y][x];
             }
-        }
+        }        
     }
 
     removeActor(actor) {
@@ -135,25 +133,24 @@ class Level {
     }
 
     noMoreActors(type) {
-        /*let index = this.actors.findIndex(actor => actor.type === type);*/
-        /*return (index === -1) ? true : false;*/
-
         return this.actors.findIndex(actor => actor.type === 'player') === -1;
     }
 
     playerTouched(type, actor) {
+        if (this.status !== null) return;
+
         if (type === 'lava' || type === 'fireball') {
             this.status = 'lost';
             return;
         }
 
-        if (type === 'coin' && actor instanceof Actor) {
+        if (type === 'coin' &&  actor instanceof Actor) {
             this.removeActor(actor);
             if (this.noMoreActors('coin')) {
                 this.status = 'won';                
             }                             
         }
-    }
+    }   
 }
 
 class Player extends Actor {
@@ -190,12 +187,7 @@ class Coin extends Actor {
         let x = 0,
             y = Math.sin(this.spring ) * this.springDist;
         return new Vector(x, y);
-    }
-
-    /*getNextPosition(time = 1) {        
-        this.updateSpring(time);
-        return this.start.plus(this.getSpringVector());
-    }*/
+    }    
 
     act(time) {
         this.pos = this.getNextPosition(time);
@@ -219,7 +211,7 @@ class Fireball extends Actor {
     act(time, level) {
         let next = this.getNextPosition(time);
 
-        if (level.obstacleAt(next, this.size)) {
+        if (level.obstacleAt(next, this.size) || next.x + 1 > level.width) {
             this.handleObstacle(next, this.size);
         } else {
             this.pos = next;
@@ -245,11 +237,11 @@ class FireRain extends Fireball {
     constructor(pos) {
         let speed = new Vector(0, 3);
         super(pos, speed);
-
+        
         this.handleObstacle = () => {
             this.speed = this.speed;
             this.pos = pos;
-        }
+        }    
     }    
 }
 
@@ -320,33 +312,24 @@ const objectList = {
 
 
 //Попытка запуска игры
-const schemas = [
-  [
-    '   v  v    ',
-    '         ',
-    '    =    ',
-    '       o ',
-    '     !xxx',
-    ' @       ',
-    'xxx!     ',
-    '         '
-  ],
-  [
-    '      v  ',
-    '    v    ',
-    '  v      ',
-    '        o',
-    '        x',
-    '@   x    ',
-    'x        ',
-    '         '
-  ]
+const schema = [
+  ' | v    v',
+  '         ',
+  '    =    ',
+  'o        ',
+  '         ',
+  ' @       ',
+  'xxx!     ',
+  '         '
 ];
 const actorDict = {
   '@': Player,
+  '=': HorizontalFireball,
   'v': FireRain,
+  '|': VerticalFireball,
   'o': Coin
 }
 const parser = new LevelParser(actorDict);
-runGame(schemas, parser, DOMDisplay)
-  .then(() => console.log('Вы выиграли приз!'));
+const level = parser.parse(schema);
+runLevel(level, DOMDisplay)
+  .then(status => console.log(`Игрок ${status}`));
