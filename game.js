@@ -107,9 +107,9 @@ class Level {
         }
 
         const top = Math.floor(position.y);
-        const bottom = Math.floor(position.y + size.y);
+        const bottom = Math.ceil(position.y + size.y);
         const left = Math.floor(position.x);
-        const right = Math.floor(position.x + size.x);
+        const right = Math.ceil(position.x + size.x);
 
         if (top < 0 || left < 0 || right > this.width) {
             return 'wall';    
@@ -119,9 +119,9 @@ class Level {
             return 'lava';    
         } 
         
-        for (let y = top; y <= bottom; y++) {
-            for (let x = left; x <= right; x++) {
-                if (this.grid[y][x] !== null) {
+        for (let y = top; y < bottom; y++) {
+            for (let x = left; x < right; x++) {
+                if (this.grid[y][x] != null) {
                     return this.grid[y][x];
                 }
             }
@@ -162,7 +162,7 @@ class Level {
 class Player extends Actor {
     constructor(pos = new Vector(0, 0)) {
         pos = pos.plus(new Vector(0, -0.5));
-        // не объявляйте переменный через запятую
+        
         let size = new Vector(0.8, 1.5);
         let speed = new Vector(0, 0);
 
@@ -334,10 +334,10 @@ const schema = [
     "  |xxx       w         ",
     "  o                 o  ",
     "  x               = x  ",
-    "  x         xo o    x  ",
-    "  x@      * xxxxxx  x  ",
-    "  xxxx              x  ",
-    "      !!!!!!!!!!!!!x  ",
+    "  x          o o    x  ",
+    "  x  @    *  xxxxx  x  ",
+    "  xxxxx             x  ",
+    "      x!!!!!!!!!!!!!x  ",
     "      xxxxxxxxxxxxxxx  ",
     "                       "
   ];
