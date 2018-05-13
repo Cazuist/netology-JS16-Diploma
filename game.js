@@ -325,23 +325,28 @@ function rand(min, max) {
 
 //Попытка запуска игры
 
-const schema = [
-    "     v                 ",
-    "                       ",
-    "                       ",
-    "                       ",
-    "                       ",
-    "  |xxx       w         ",
-    "  o                 o  ",
-    "  x               = x  ",
-    "  x          o o    x  ",
-    "  x  @    *  xxxxx  x  ",
-    "  xxxxx             x  ",
-    "      x!!!!!!!!!!!!!x  ",
-    "      xxxxxxxxxxxxxxx  ",
-    "                       "
-  ];
-
+const schemas = [
+  [
+    '         ',
+    '         ',
+    '    =    ',
+    '       o ',
+    '     !xxx',
+    ' @       ',
+    'xxx!     ',
+    '         '
+  ],
+  [
+    '      v  ',
+    '         ',
+    '  v      ',
+    '        o',
+    '        x',
+    '@   x    ',
+    'x        ',
+    '         '
+  ]
+];
 
 const actorDict = {
   '@': Player,
@@ -350,7 +355,7 @@ const actorDict = {
   '|': VerticalFireball,
   'o': Coin
 }
+
 const parser = new LevelParser(actorDict);
-const level = parser.parse(schema);
-runLevel(level, DOMDisplay)
-  .then(status => console.log(`Игрок ${status}`));
+runGame(schemas, parser, DOMDisplay)
+  .then(() => alert('Вы выиграли приз!'));
