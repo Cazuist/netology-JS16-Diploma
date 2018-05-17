@@ -161,12 +161,8 @@ class Level {
 }
 
 class Player extends Actor {
-    constructor(pos = new Vector(0, 0)) {
-        pos = pos.plus(new Vector(0, -0.5));
-        const size = new Vector(0.8, 1.5);
-        const speed = new Vector(0, 0);
-
-        super(pos, size, speed);        
+    constructor(pos = new Vector(0, 0)) {       
+        super(pos.plus(new Vector(0, -0.5)), new Vector(0.8, 1.5), new Vector(0, 0));        
     }
 
     get type() {
@@ -176,15 +172,13 @@ class Player extends Actor {
 
 class Coin extends Actor {
     constructor(pos = new Vector(0, 0)) {
-        const size = new Vector(0.6, 0.6);
-        pos = pos.plus(new Vector(0.2, 0.1)); 
-
-        super(pos, size);
+        const startPos = pos.plus(new Vector(0.2, 0.1));
+        super(startPos, new Vector(0.6, 0.6));
 
         this.springSpeed = 8;
         this.springDist = 0.07;
         this.spring = rand(0, 2 * Math.PI);        
-        this.start = pos;
+        this.start = startPos;
     }
 
     get type() {
@@ -212,10 +206,8 @@ class Coin extends Actor {
 }
 
 class Fireball extends Actor {
-    constructor(pos = new Vector(0, 0), speed = new Vector(0, 0)) {
-        const size = new Vector(1, 1);
-
-        super(pos, size, speed);        
+    constructor(pos = new Vector(0, 0), speed = new Vector(0, 0)) {        
+        super(pos, new Vector(1, 1), speed);        
     }
 
     get type() {
@@ -243,25 +235,19 @@ class Fireball extends Actor {
 
 class HorizontalFireball extends Fireball {
     constructor(pos) {
-        const speed = new Vector(2, 0);
-
-        super(pos, speed);
+        super(pos, new Vector(2, 0));
     }
 }
 
 class VerticalFireball extends Fireball {
     constructor(pos) {
-        const speed = new Vector(0, 2);
-
-        super(pos, speed);
+        super(pos, new Vector(0, 2));
     }
 }
 
 class FireRain extends Fireball {
     constructor(pos) {
-        const speed = new Vector(0, 3);
-
-        super(pos, speed);
+        super(pos, new Vector(0, 3));
         this.start = pos;
     }
 
