@@ -307,9 +307,7 @@ class LevelParser {
     }
 }
 
-
 //Запуск игры
-
 const schemas = [
   [
     '         ',
