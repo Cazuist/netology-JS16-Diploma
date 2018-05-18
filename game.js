@@ -83,7 +83,7 @@ class Level {
         this.height = this.grid.length;
         this.width = this.grid.reduce((memo, destArr) => {
             return (destArr.length > memo) ? destArr.length: memo;
-            }, 0);
+        }, 0);
 
         this.status = null;
         this.finishDelay = 1;
@@ -172,13 +172,12 @@ class Player extends Actor {
 
 class Coin extends Actor {
     constructor(pos = new Vector(0, 0)) {
-        const startPos = pos.plus(new Vector(0.2, 0.1));
-        super(startPos, new Vector(0.6, 0.6));
+        super(pos.plus(new Vector(0.2, 0.1)), new Vector(0.6, 0.6));
 
         this.springSpeed = 8;
         this.springDist = 0.07;
         this.spring = rand(0, 2 * Math.PI);        
-        this.start = startPos;
+        this.start = this.pos;
     }
 
     get type() {
