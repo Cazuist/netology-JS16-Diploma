@@ -1,10 +1,5 @@
 'use strict';
 
-//Вспомогательный код
-function rand(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
 // Основной функционал
 class Vector {
     constructor (x = 0, y = 0) {
@@ -176,7 +171,7 @@ class Coin extends Actor {
 
         this.springSpeed = 8;
         this.springDist = 0.07;
-        this.spring = rand(0, 2 * Math.PI);        
+        this.spring = Math.random() * Math.PI * 2;        
         this.start = this.pos;
     }
 
